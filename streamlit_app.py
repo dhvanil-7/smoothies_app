@@ -33,9 +33,11 @@ if ingredients_list:
         st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
         
         fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+search_on)
-        st.write(fruityvice_response.json())
-        st.subheader(fruit_chosen + ' Nutrition Information')
-        fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+        if fruityvice_response.status_code == 200:
+            st.subheader(fruit_chosen + ' Nutrition Information')
+            fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+        else:
+            st.subheader(fruit_chosen + ' Nutrition Information is not available.')
 
     my_insert_stmt = f""" insert into smoothies.public.orders(ingredients, name_on_order)
     values ('{ingredients_string}', '{customer_name}')
